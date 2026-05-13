@@ -1,0 +1,355 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KPI Overview – April 2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f5f7;
+    padding: 24px;
+    color: #1a1a1a;
+  }
+
+  .dashboard {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 28px 28px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+
+  /* Header */
+  .header {
+    border-left: 4px solid #0F6E56;
+    padding-left: 14px;
+    margin-bottom: 20px;
+  }
+  .header .kpi-tag {
+    font-size: 10px;
+    font-weight: 700;
+    color: #0F6E56;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 6px;
+  }
+  .header .source-line {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 0 0 16px;
+  }
+
+  /* KPI Cards Grid - Row 1 */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .kpi-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 14px 14px 12px;
+    background: #fff;
+    position: relative;
+  }
+  .kpi-card.on-target   { border-top: 3px solid #0F6E56; }
+  .kpi-card.needs-action{ border-top: 3px solid #E07B00; }
+  .kpi-card.critical    { border-top: 3px solid #C0392B; }
+  .kpi-card.neutral     { border-top: 3px solid #cccccc; }
+
+  .kpi-card .card-label {
+    font-size: 11px;
+    color: #777;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+  }
+  .kpi-card .card-value {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .card-value.green  { color: #0F6E56; }
+  .card-value.red    { color: #C0392B; }
+  .card-value.orange { color: #E07B00; }
+  .card-value.dark   { color: #1a1a1a; }
+  .card-value.big-red { color: #C0392B; font-size: 38px; }
+
+  .kpi-card .card-meta {
+    font-size: 11.5px;
+    line-height: 1.6;
+  }
+  .tag-green  { color: #0F6E56; font-weight: 600; }
+  .tag-red    { color: #C0392B; font-weight: 600; }
+  .tag-orange { color: #E07B00; font-weight: 600; }
+  .tag-gray   { color: #888; }
+
+  /* Row 2 – info cards */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .card-subtitle {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 2px;
+  }
+  .card-count {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 6px;
+  }
+
+  /* Overall Status */
+  .status-panel {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+  }
+  .status-panel .panel-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 14px;
+  }
+  .status-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 160px;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .stat-box {
+    border-radius: 8px;
+    padding: 16px 12px;
+    text-align: center;
+  }
+  .stat-box.green-bg  { background: #EAF3DE; }
+  .stat-box.orange-bg { background: #FFF3E0; }
+  .stat-box.red-bg    { background: #FCEBEB; }
+  .stat-box.dark-bg   { background: #1A2B2E; }
+
+  .stat-num {
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-num.green  { color: #0F6E56; }
+  .stat-num.orange { color: #E07B00; }
+  .stat-num.red    { color: #C0392B; }
+  .stat-num.white  { color: #ffffff; font-size: 30px; }
+
+  .stat-desc { font-size: 12px; color: #666; }
+  .stat-desc.white { color: rgba(255,255,255,0.75); }
+
+  /* Ticker bar */
+  .ticker {
+    background: #1A2B2E;
+    border-radius: 8px;
+    padding: 11px 16px;
+  }
+  .ticker p {
+    color: #ffffff;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .ticker p.ticker-bold { font-weight: 600; font-size: 13px; }
+
+  /* Responsive */
+  @media (max-width: 800px) {
+    .kpi-grid, .info-grid { grid-template-columns: repeat(2, 1fr); }
+    .status-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 480px) {
+    .kpi-grid, .info-grid { grid-template-columns: 1fr; }
+    .status-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="dashboard">
+
+  <!-- Header -->
+  <div class="header">
+    <p class="kpi-tag">KPI Overview</p>
+    <h1>4 Key Performance Indicators &middot; April 2026</h1>
+    <p class="source-line">
+      Source: TFS &mdash; Internal: 709 Bugs &middot; 2,352 TCs &middot; 85 CRs
+      &nbsp;|&nbsp;
+      External: 598 Bugs &middot; 507 TCs &middot; 52 CRs
+      &nbsp;|&nbsp;
+      Combined: 1,307 Bugs &middot; 2,879 TCs &middot; 137 CRs
+    </p>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- Row 1: KPI Metric Cards -->
+  <div class="kpi-grid">
+
+    <div class="kpi-card on-target">
+      <p class="card-label">Defect Leakage</p>
+      <p class="card-value green">4.67%</p>
+      <p class="card-meta">
+        <span class="tag-green">&#10003; On Target</span><br>
+        <span class="tag-gray">Target: &le; 5%</span>
+      </p>
+    </div>
+
+    <div class="kpi-card needs-action">
+      <p class="card-label">Reopen Rate</p>
+      <p class="card-value orange">6.31%</p>
+      <p class="card-meta">
+        <span class="tag-orange">&#9651; Needs Action</span><br>
+        <span class="tag-gray">Target: &le; 5%</span>
+      </p>
+    </div>
+
+    <div class="kpi-card on-target">
+      <p class="card-label">Rejected Bug Rate</p>
+      <p class="card-value green">1.80%</p>
+      <p class="card-meta">
+        <span class="tag-green">&#10003; On Target</span><br>
+        <span class="tag-gray">Target: &le; 5%</span>
+      </p>
+    </div>
+
+    <div class="kpi-card critical">
+      <p class="card-label">Critical/High Bug Rate</p>
+      <p class="card-value red">32.21%</p>
+      <p class="card-meta">
+        <span class="tag-red">Target: &le; 20%</span>
+      </p>
+    </div>
+
+    <div class="kpi-card neutral">
+      <p class="card-label">Quality Score</p>
+      <p class="card-value dark">76.5/100</p>
+      <p class="card-meta">
+        <span class="tag-gray">Combined: 76.5</span><br>
+        <span class="tag-green">INT: 80.3 &#10003;</span>
+        &nbsp;
+        <span class="tag-orange">EXT: 68.6 &#9651;</span>
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Row 2: Info Cards -->
+  <div class="info-grid">
+
+    <div class="kpi-card neutral">
+      <p class="card-label">Total Bugs</p>
+      <p class="card-value dark">1,307</p>
+      <p class="card-meta">
+        <span class="tag-green">Int: 709</span>
+        &nbsp;&middot;&nbsp;
+        <span class="tag-gray">Ext: 598</span>
+      </p>
+    </div>
+
+    <div class="kpi-card needs-action">
+      <p class="card-label">Test Cases</p>
+      <p class="card-value dark">2,879</p>
+      <p class="card-meta">
+        <span class="tag-orange">TFS Executed</span>
+      </p>
+    </div>
+
+    <div class="kpi-card needs-action">
+      <p class="card-label">Change Requests</p>
+      <p class="card-subtitle">Change Requests</p>
+      <p class="card-count">137</p>
+      <p class="card-meta">
+        <span class="tag-green">Sprint 04-2026</span>
+      </p>
+    </div>
+
+    <div class="kpi-card critical">
+      <p class="card-label">Technical Production Bugs</p>
+      <p class="card-value big-red">61</p>
+      <p class="card-meta">
+        <span class="tag-orange">Technical impact (43) +<br>Uncov. Scenario (18)</span>
+      </p>
+    </div>
+
+    <div class="kpi-card on-target">
+      <p class="card-label">Closed Bugs</p>
+      <p class="card-value dark">1,172</p>
+      <p class="card-meta">
+        <span class="tag-green">Resolution Rate 89.7%</span>
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Overall Status -->
+  <div class="status-panel">
+    <p class="panel-title">Overall Status &mdash; April 2026</p>
+    <div class="status-grid">
+
+      <div class="stat-box green-bg">
+        <div class="stat-num green">2</div>
+        <div class="stat-desc">Metrics On Target</div>
+      </div>
+
+      <div class="stat-box orange-bg">
+        <div class="stat-num orange">1</div>
+        <div class="stat-desc">Need Attention</div>
+      </div>
+
+      <div class="stat-box red-bg">
+        <div class="stat-num red">2</div>
+        <div class="stat-desc">Critical</div>
+      </div>
+
+      <div class="stat-box dark-bg">
+        <div class="stat-num white">76.5 / 100</div>
+        <div class="stat-desc white">Overall Benchmark Score</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Ticker -->
+  <div class="ticker">
+    <p class="ticker-bold">
+      &#9641; Production Bugs &mdash; 61 &nbsp;(Dev-Balady: 43 &middot; Uncovered Scenario: 18)
+      &nbsp;|&nbsp;
+      Top leakage: ConstructionLicenses (48) &middot; CommercialLicenses (45) &middot; Tawakkalna (19)
+    </p>
+    <p>
+      ContractorClassification (13, EXT) &middot; Nasseq (12) &middot; InvestmentOpp (11) &middot;
+      BaladyPortal (9) &middot; BaladyPlus (9, EXT) &middot; Others (9 each) &middot; : 10
+    </p>
+  </div>
+
+</div>
+</body>
+</html>
